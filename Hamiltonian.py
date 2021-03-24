@@ -2,7 +2,7 @@ import numpy as np
 from qutip import *
 
 
-def Hamiltonian(omega_a, omega_m, g, n, rwa):
+def Hamiltonian(omega_a, omega_m, g, n, a, sm, rwa):
     """
     Mendefinisikan Hamiltonian untuk model Jaynes-Cumming dengan parameter yang sesuai.
 
@@ -20,6 +20,12 @@ def Hamiltonian(omega_a, omega_m, g, n, rwa):
     n : :int
         Merupakan ungkapan parameter jumlah N medan
 
+    a : :Qobj
+        Operator anihilasi
+
+    sm : :Qobj
+        Operator sigma_negatif
+
     rwa : :bool
         Merupakan parameter RWA.
         True : menggunakan RWA
@@ -27,13 +33,11 @@ def Hamiltonian(omega_a, omega_m, g, n, rwa):
 
     """
 
-    # Mempersiapkan operator
-    a = tensor(destroy(n), qeye(2))  # operator a (anhilation)
-    sm = tensor(qeye(n), destroy(2))  # operator sigma-minus
-
     # Hamiltonian
     if rwa:
-        H = omega_m * a.dag() * a + 0.5 * omega_a * commutator(sm.dag(), sm) + g * (a.dag() * sm + a * sm.dag())
+        H = omega_m * a.dag() * a + 0.5 * omega_a * commutator(sm.dag(), sm) + \
+            g * (a.dag() * sm + a * sm.dag())
     else:
-        H = omega_m * a.dag() * a + 0.5 * omega_a * commutator(sm.dag(), sm) + g * (a.dag() + a) * (sm + sm.dag())
+        H = omega_m * a.dag() * a + 0.5 * omega_a * commutator(sm.dag(), sm) + \
+            g * (a.dag() + a) * (sm + sm.dag())
     return H
